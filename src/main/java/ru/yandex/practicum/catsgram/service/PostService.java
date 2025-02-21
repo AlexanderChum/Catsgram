@@ -2,16 +2,15 @@ package ru.yandex.practicum.catsgram.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.yandex.practicum.catsgram.exception.ConditionsNotMetException;
 import ru.yandex.practicum.catsgram.exception.NotFoundException;
 import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.model.User;
+import ru.yandex.practicum.catsgram.repository.SortOrder;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PostService {
@@ -21,8 +20,31 @@ public class PostService {
     private UserService userService;
 
 
-    public Collection<Post> findAll() {
-        return posts.values();
+    public Collection<Post> findAll(Long from, Long size, String sort) {
+        if (from == null || from > posts.size()) {
+            throw new ConditionsNotMetException("Введен неверный пост для начала отсчета");
+        }
+
+        SortOrder sortOrder = SortOrder.from(sort);
+        List<Post> result = new ArrayList<>();
+        long start = from;
+        long end = from + size;
+
+        if (sortOrder == SortOrder.DESCENDING) {
+            for (long i = end - 1; i >= start; i--) {
+                if (posts.containsKey(i)) {
+                    result.add(posts.get(i));
+                }
+            }
+        } else { // ASCENDING or null
+            for (long i = start; i < end; i++) {
+                if (posts.containsKey(i)) {
+                    result.add(posts.get(i));
+                }
+            }
+        }
+
+        return result;
     }
 
     public Post findPost(Long postId) {

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.catsgram.controller;
 
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.catsgram.model.Post;
@@ -18,8 +19,16 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public Collection<Post> findAll() {
-        return postService.findAll();
+    public Collection<Post> findAll(@RequestParam
+                                    @Positive
+                                    Long from,
+
+                                    @RequestParam (defaultValue = "10")
+                                    @Positive
+                                    Long size,
+
+                                    @RequestParam String sort) {
+        return postService.findAll(from, size, sort);
     }
 
     @GetMapping("/post/{postId}")
