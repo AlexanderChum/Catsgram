@@ -47,7 +47,7 @@ public class PostService {
         return result;
     }
 
-    public Post findPost(Long postId) {
+    public Post findById(Long postId) {
         return posts.get(postId);
     }
 
