@@ -41,8 +41,8 @@ public class ImageService {
 
     // сохранение отдельного изображения, связанного с указанным постом
     private Image saveImage(long postId, MultipartFile file) {
-        Post post = postService.findById(postId)
-                .orElseThrow(() -> new ConditionsNotMetException("Указанный пост не найден"));
+        Post post = postService.findById(postId);
+        if (post == null) throw new ConditionsNotMetException("Указанный пост не найден");
 
         // сохраняем изображение на диск и возвращаем путь к файлу
         Path filePath = saveFile(file, post);
