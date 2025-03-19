@@ -1,6 +1,5 @@
 package ru.yandex.practicum.catsgram.controller;
 
-import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

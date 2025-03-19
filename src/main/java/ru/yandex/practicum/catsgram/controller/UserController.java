@@ -26,7 +26,7 @@ public class UserController {
 
     @GetMapping("user/{userId}")
     public User findUser(@PathVariable Long userId) {
-        Optional<User> userOpt= userService.findUserById(userId);
+        Optional<User> userOpt = userService.findUserById(userId);
         if (userOpt.get() == null) throw new ConditionsNotMetException("Пользователь с таким id не найден");
         return userOpt.get();
     }
