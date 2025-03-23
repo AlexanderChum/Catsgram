@@ -1,46 +1,42 @@
 package ru.yandex.practicum.catsgram.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.catsgram.exception.ConditionsNotMetException;
-import ru.yandex.practicum.catsgram.model.User;
+import ru.yandex.practicum.catsgram.dto.NewUserRequest;
+import ru.yandex.practicum.catsgram.dto.UpdateUserRequest;
+import ru.yandex.practicum.catsgram.dto.UserDto;
+import ru.yandex.practicum.catsgram.exception.InternalServerException;
 import ru.yandex.practicum.catsgram.service.UserService;
 
-import java.util.*;
+import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("/users")
 public class UserController {
-
     private final UserService userService;
 
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
-    @GetMapping("/users")
-    public Collection<User> findAll() {
-        return userService.findAll();
-    }
-
-    @GetMapping("user/{userId}")
-    public User findUser(@PathVariable Long userId) {
-        Optional<User> userOpt = userService.findUserById(userId);
-        if (userOpt.get() == null) throw new ConditionsNotMetException("Пользователь с таким id не найден");
-        return userOpt.get();
-    }
-
-    @PostMapping("/user")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public User create(@RequestBody User user) {
-        return userService.create(user);
+    public UserDto createUser(@RequestBody NewUserRequest userRequest) throws InternalServerException {
+        return userService.createUser(userRequest);
     }
 
-    @PutMapping("/user")
-    @ResponseStatus(HttpStatus.CREATED)
-    public User update(@RequestBody User user) {
-        return userService.update(user);
+    @PutMapping("/{userId}")
+    public UserDto updateUser(@PathVariable("userId") long userId, @RequestBody UpdateUserRequest request) throws InternalServerException {
+        return userService.updateUser(userId, request);
     }
 
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDto> getUsers() {
+        return userService.getUsers();
+    }
+
+    @GetMapping("/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto getUserById(@PathVariable("userId") long userId) {
+        return userService.getUserById(userId);
+    }
 }
